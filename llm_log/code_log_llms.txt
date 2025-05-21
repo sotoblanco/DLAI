@@ -1,0 +1,353 @@
+prompt
+
+Role: You’re a helpful mentor of ML in Pytorch that builds assignment for learners.
+Context: This is the first assignment of a learner that is building his first neural network, we will provide the data as hard-coded representation of a list and passed to the training loop. We are working in a notebook so the code needs to be sequential and being able to run as block, also the function will be tested and asses in terms of producing the correct output and following the assignment instructions.
+Instruction: Build a training loop for a binary classification problem, defining the model as a single layer, optimizer (SGD), and a loss function using PyTorch. Follow the pep-8 guidelines and provide documentation of the code.
+Output: Python code with minimal code that only shows the training loop
+
+
+
+#################
+Gemini 2.5 flash
+################
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# --- 1. Data Definition ---
+# Hard-coded dataset for binary classification.
+# Features (input_data): A list of lists, where each inner list represents a sample's features.
+# Labels (target_labels): A list of integers (0 or 1) corresponding to the binary class.
+input_data = [
+    [0.1, 0.2],
+    [0.8, 0.9],
+    [0.3, 0.4],
+    [0.7, 0.6],
+    [0.05, 0.15],
+    [0.95, 0.85],
+    [0.2, 0.3],
+    [0.6, 0.7],
+]
+target_labels = [0, 1, 0, 1, 0, 1, 0, 1]
+
+# Convert Python lists to PyTorch tensors.
+# input_tensor: (num_samples, num_features)
+# target_tensor: (num_samples, 1) - Reshape for compatibility with BCEWithLogitsLoss
+input_tensor = torch.tensor(input_data, dtype=torch.float32)
+target_tensor = torch.tensor(target_labels, dtype=torch.float32).view(-1, 1)
+
+# --- 2. Model Definition ---
+# A simple neural network with a single linear layer.
+# This layer will take 2 input features and output 1 value (logit for binary classification).
+class SingleLayerNN(nn.Module):
+    """
+    A simple neural network consisting of a single linear layer
+    for binary classification.
+    """
+    def __init__(self, input_features, output_features):
+        """
+        Initializes the SingleLayerNN.
+
+        Args:
+            input_features (int): The number of input features.
+            output_features (int): The number of output features (1 for binary classification).
+        """
+        super(SingleLayerNN, self).__init__()
+        self.linear = nn.Linear(input_features, output_features)
+
+    def forward(self, x):
+        """
+        Performs the forward pass of the network.
+
+        Args:
+            x (torch.Tensor): The input tensor.
+
+        Returns:
+            torch.Tensor: The output logits from the linear layer.
+        """
+        return self.linear(x)
+
+# Instantiate the model.
+# Our input has 2 features, and we want 1 output logit.
+model = SingleLayerNN(input_features=2, output_features=1)
+
+# --- 3. Loss Function and Optimizer Definition ---
+# Loss Function: BCEWithLogitsLoss is suitable for binary classification.
+# It combines a Sigmoid activation and Binary Cross Entropy loss in one stable function.
+# This means the model's output should be raw logits (no sigmoid applied in the model).
+criterion = nn.BCEWithLogitsLoss()
+
+# Optimizer: Stochastic Gradient Descent (SGD).
+# We pass the model's parameters to the optimizer and set a learning rate.
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# --- 4. Training Loop ---
+# Define the number of training epochs.
+num_epochs = 100
+
+print("Starting training loop...")
+for epoch in range(num_epochs):
+    # Set the model to training mode (important for layers like BatchNorm, Dropout, though not in this simple model).
+    model.train()
+
+    # --- Forward pass ---
+    # Get the model's predictions (logits) for the entire input dataset.
+    outputs = model(input_tensor)
+
+    # --- Calculate the loss ---
+    # Compare the model's output logits with the true target labels.
+    loss = criterion(outputs, target_tensor)
+
+    # --- Backward pass and Optimization ---
+    # Zero the gradients: Clear any accumulated gradients from previous iterations.
+    optimizer.zero_grad()
+    # Perform backward pass: Compute gradients of the loss with respect to model parameters.
+    loss.backward()
+    # Update model parameters: Adjust weights and biases based on the computed gradients.
+    optimizer.step()
+
+    # --- Print progress ---
+    # Print the loss every 10 epochs to monitor training progress.
+    if (epoch + 1) % 10 == 0:
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+
+print("Training finished.")
+
+# --- Optional: Evaluate the trained model ---
+# Set the model to evaluation mode.
+model.eval()
+with torch.no_grad(): # Disable gradient calculation for evaluation.
+    # Get predictions (logits)
+    test_outputs = model(input_tensor)
+    # Apply sigmoid to convert logits to probabilities (0-1 range).
+    probabilities = torch.sigmoid(test_outputs)
+    # Convert probabilities to binary predictions (0 or 1).
+    predicted_classes = (probabilities >= 0.5).float()
+
+# Calculate accuracy.
+accuracy = (predicted_classes == target_tensor).float().mean()
+print(f"Final Accuracy on training data: {accuracy.item():.4f}")
+
+# Example prediction for a new data point
+new_data_point = torch.tensor([[0.1, 0.1]], dtype=torch.float32)
+with torch.no_grad():
+    new_logit = model(new_data_point)
+    new_probability = torch.sigmoid(new_logit)
+    new_prediction = (new_probability >= 0.5).float()
+print(f"Prediction for [0.1, 0.1]: Logit={new_logit.item():.4f}, Probability={new_probability.item():.4f}, Class={int(new_prediction.item())}")
+
+new_data_point_2 = torch.tensor([[0.9, 0.9]], dtype=torch.float32)
+with torch.no_grad():
+    new_logit_2 = model(new_data_point_2)
+    new_probability_2 = torch.sigmoid(new_logit_2)
+    new_prediction_2 = (new_probability_2 >= 0.5).float()
+print(f"Prediction for [0.9, 0.9]: Logit={new_logit_2.item():.4f}, Probability={new_probability_2.item():.4f}, Class={int(new_prediction_2.item())}")
+
+
+########################
+ChatGPT
+########################
+
+Here's a minimal, clean, and well-documented PyTorch training loop for a binary classification task, following the PEP-8 style and assuming hardcoded data:
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Sample data: 6 examples, 2 features each
+# Inputs: X, Labels: y (0 or 1)
+X = torch.tensor([
+    [0.0, 0.0],
+    [0.0, 1.0],
+    [1.0, 0.0],
+    [1.0, 1.0],
+    [0.5, 0.5],
+    [0.2, 0.8]
+], dtype=torch.float32)
+
+y = torch.tensor([
+    [0],
+    [1],
+    [1],
+    [0],
+    [1],
+    [1]
+], dtype=torch.float32)
+
+# Define a simple model: one linear layer with sigmoid activation
+model = nn.Sequential(
+    nn.Linear(2, 1),
+    nn.Sigmoid()
+)
+
+# Binary cross-entropy loss and SGD optimizer
+loss_fn = nn.BCELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.1)
+
+# Training loop
+num_epochs = 1000
+
+for epoch in range(num_epochs):
+    # Forward pass
+    y_pred = model(X)
+    
+    # Compute loss
+    loss = loss_fn(y_pred, y)
+
+    # Backward pass and optimization
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    # Print loss every 100 epochs
+    if epoch % 100 == 0:
+        print(f'Epoch {epoch}, Loss: {loss.item():.4f}')
+```
+
+### Key Notes:
+
+* **Sequential execution**: Ideal for notebooks; each cell/block can run independently.
+* **Single-layer model**: Fulfills the "first neural network" constraint.
+* **Binary classification**: Uses sigmoid + BCELoss.
+* **SGD**: Simple optimizer for pedagogical purposes.
+* **Hardcoded data**: No need for data loading or batching.
+
+Let me know if you'd like an evaluation/test block next!
+
+
+####################################
+Claude 3.7 soonet
+###################################
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set random seed for reproducibility
+torch.manual_seed(42)
+
+# Define a simple binary classification model
+class BinaryClassifier(nn.Module):
+    """
+    A simple single-layer neural network for binary classification.
+    
+    This model consists of a single linear layer followed by a sigmoid activation
+    function to output probabilities between 0 and 1.
+    """
+    def __init__(self, input_dim):
+        """
+        Initialize the binary classifier.
+        
+        Args:
+            input_dim (int): Number of input features
+        """
+        super(BinaryClassifier, self).__init__()
+        self.linear = nn.Linear(input_dim, 1)
+        self.sigmoid = nn.Sigmoid()
+        
+    def forward(self, x):
+        """
+        Forward pass through the network.
+        
+        Args:
+            x (torch.Tensor): Input tensor of shape [batch_size, input_dim]
+            
+        Returns:
+            torch.Tensor: Output probabilities of shape [batch_size, 1]
+        """
+        out = self.linear(x)
+        out = self.sigmoid(out)
+        return out
+
+def train_binary_classifier(X_train, y_train, learning_rate=0.01, epochs=1000):
+    """
+    Train a binary classifier using PyTorch.
+    
+    Args:
+        X_train (list or np.ndarray): Training features
+        y_train (list or np.ndarray): Training labels (0 or 1)
+        learning_rate (float): Learning rate for optimizer
+        epochs (int): Number of training epochs
+    
+    Returns:
+        tuple: Trained model and list of losses during training
+    """
+    # Convert data to torch tensors
+    X = torch.FloatTensor(X_train)
+    y = torch.FloatTensor(y_train).reshape(-1, 1)
+    
+    # Get input dimension
+    input_dim = X.shape[1]
+    
+    # Initialize model
+    model = BinaryClassifier(input_dim)
+    
+    # Define loss function
+    criterion = nn.BCELoss()
+    
+    # Define optimizer
+    optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+    
+    # Lists to store metrics
+    losses = []
+    
+    # Training loop
+    for epoch in range(epochs):
+        # Forward pass
+        y_pred = model(X)
+        
+        # Compute loss
+        loss = criterion(y_pred, y)
+        losses.append(loss.item())
+        
+        # Backward pass and optimization
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
+        # Print progress every 100 epochs
+        if (epoch + 1) % 100 == 0:
+            print(f'Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}')
+    
+    return model, losses
+
+# Example usage with sample data
+if __name__ == "__main__":
+    # Generate sample data for binary classification
+    X_data = [
+        [0.5, 0.7],
+        [0.1, 0.2],
+        [0.8, 0.9],
+        [0.3, 0.5],
+        [0.7, 0.2],
+        [0.1, 0.9],
+        [0.4, 0.6],
+        [0.2, 0.8]
+    ]
+    
+    y_data = [1, 0, 1, 0, 1, 0, 1, 0]
+    
+    # Train the model
+    model, losses = train_binary_classifier(X_data, y_data)
+    
+    # Plot the loss curve
+    plt.figure(figsize=(8, 5))
+    plt.plot(losses)
+    plt.title('Training Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.grid(True)
+    plt.show()
+    
+    # Make predictions with the trained model
+    X_test = torch.FloatTensor([[0.6, 0.6], [0.2, 0.3]])
+    with torch.no_grad():
+        y_pred = model(X_test)
+    
+    print("Predictions:")
+    for i, pred in enumerate(y_pred):
+        print(f"Sample {i+1}: {pred.item():.4f} → Class: {1 if pred.item() > 0.5 else 0}")
+

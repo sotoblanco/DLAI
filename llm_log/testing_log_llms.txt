@@ -1,0 +1,187 @@
+CODE_TO_TEST: 
+def train_binary_classifier(model, dataloader, criterion, optimizer, num_epochs=10):
+    """
+    Performs the training loop for a binary classification model.
+
+    Args:
+        model (torch.nn.Module): The PyTorch model to be trained.
+        dataloader (torch.utils.data.DataLoader): DataLoader providing training data.
+        criterion (torch.nn.Module): The loss function (e.g., nn.BCEWithLogitsLoss).
+        optimizer (torch.optim.Optimizer): The optimizer (e.g., optim.SGD).
+        num_epochs (int): The number of epochs to train the model.
+    """
+    model.train()  # Set the model to training mode
+
+    for epoch in range(num_epochs):
+        running_loss = 0.0
+        for inputs, labels in dataloader:
+            # Zero the parameter gradients
+            optimizer.zero_grad() # omit
+
+            # Forward pass
+            outputs = model(inputs)
+
+            # Calculate loss
+            # Ensure labels are float and have the correct shape (e.g., [batch_size, 1])
+            loss = criterion(outputs, labels.float().unsqueeze(1)) # omit
+
+            # Backward pass and optimize
+            loss.backward() # omit
+            optimizer.step() # omit
+
+            running_loss += loss.item() * inputs.size(0)
+
+        epoch_loss = running_loss / len(dataloader.dataset)
+        print(f"Epoch {epoch+1}/{num_epochs}, Loss: {epoch_loss:.4f}")
+
+Role: You’re a software engineer tester expert in creating useful unit test for code to asses assignment code.
+Context: The unit test code is meant to check possible errors in type, format, and output of a function that is meant to test the learner understanding by omitting some lines of code to the learner be able to fill. 
+Instruction: Create a unit test for this code {CODE_TO_TEST}
+Use a readable format following the PEP-8 guidelines and use unittest as framework. Add a helpful message that helps to identify the error and adjust the code to get an accurate answer. Make sure to include:
+-	Test that the expected functions are present: zero grad, forward pass, loss, backward, and optimizer
+-	Test syntax
+-	Expected input: model, dataloader, criterion, optimizer, and num_epochs
+-	Shape of expected inputs
+-	Output shape
+-	Hard-coded examples
+-	The function is producing the expected results
+-	Pass the function and recreate the expected outputs
+Include any testing to prevent the most many errors that learners might make, such as forgetting to pass the data in the right shape, deleting parts of the code, or not completing the full code.
+Output: Provide Python code with helpful comments to explain the test, which is meant to be run as a single function in the Jupyter notebook with input the learner's definition of the function and output a print statement for either passing or failing, with some information to help debug the code if it fails. 
+
+#################
+ChatGPT
+#################
+Sure! Below is a **comprehensive unit test** function designed to be used in a **Jupyter Notebook** to validate whether a learner has implemented a training loop correctly. This test assumes the function being tested is a **PyTorch model training function**, and it checks for common issues such as:
+
+* Incorrect input types or shapes
+* Missing key steps (zero grad, forward, loss, backward, optimizer step)
+* Incorrect outputs
+* Syntax or logical issues
+* Behavior with hardcoded examples
+
+---
+
+### ✅ **Unit Test Code for Learner’s Training Function**
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+import inspect
+
+
+def test_training_function(train_fn):
+    """
+    Unit test for the learner's training function.
+    This function assumes train_fn has the signature:
+    train_fn(model, dataloader, criterion, optimizer, num_epochs)
+    """
+
+    print("🔍 Running unit tests on the training function...")
+
+    # ---- 1. Test function signature ----
+    expected_args = ['model', 'dataloader', 'criterion', 'optimizer', 'num_epochs']
+    actual_args = inspect.getfullargspec(train_fn).args
+    assert actual_args == expected_args, (
+        f"❌ Function arguments are incorrect. Expected {expected_args}, but got {actual_args}.\n"
+        "✅ Make sure your function signature is: train_fn(model, dataloader, criterion, optimizer, num_epochs)"
+    )
+
+    # ---- 2. Create dummy data for test ----
+    torch.manual_seed(42)
+    X = torch.randn(100, 10)  # 100 samples, 10 features
+    y = torch.randint(0, 2, (100,))  # Binary classification
+    dataset = TensorDataset(X, y)
+    dataloader = DataLoader(dataset, batch_size=10)
+
+    # ---- 3. Dummy model ----
+    class DummyModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.linear = nn.Linear(10, 2)  # output logits for 2 classes
+
+        def forward(self, x):
+            return self.linear(x)
+
+    model = DummyModel()
+
+    # ---- 4. Loss and optimizer ----
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(model.parameters(), lr=0.01)
+    num_epochs = 3
+
+    # ---- 5. Run the training function ----
+    try:
+        train_fn(model, dataloader, criterion, optimizer, num_epochs)
+    except Exception as e:
+        raise AssertionError(f"❌ Your function crashed during execution.\nError: {str(e)}\n"
+                             "✅ Check for missing steps or misused objects inside your function.")
+
+    # ---- 6. Check that model was trained (weights changed) ----
+    model2 = DummyModel()  # identical fresh model
+    same = torch.equal(model.linear.weight, model2.linear.weight)
+    assert not same, (
+        "❌ Model weights did not change. This suggests the model was not trained.\n"
+        "✅ Make sure you are calling loss.backward() and optimizer.step()."
+    )
+
+    # ---- 7. Check loss decreases ----
+    with torch.no_grad():
+        model.eval()
+        x_batch, y_batch = next(iter(dataloader))
+        output = model(x_batch)
+        loss = criterion(output, y_batch)
+        assert loss.item() >= 0, (
+            "❌ Loss is not a valid non-negative number.\n"
+            "✅ Check if your model produces valid output and loss is computed correctly."
+        )
+
+    # ---- 8. Check output shape ----
+    output_shape = output.shape
+    expected_output_shape = (10, 2)  # batch_size x num_classes
+    assert output_shape == expected_output_shape, (
+        f"❌ Output shape mismatch. Got {output_shape}, expected {expected_output_shape}.\n"
+        "✅ Ensure your model output matches the target shape for classification."
+    )
+
+    # ---- 9. Check dataloader usage ----
+    try:
+        code = inspect.getsource(train_fn)
+        keywords = ['zero_grad', 'forward', 'backward', 'step']
+        missing = [kw for kw in keywords if kw not in code]
+        assert not missing, (
+            f"❌ Missing essential training step(s): {missing}.\n"
+            "✅ Make sure your function calls model.zero_grad(), model(input), loss.backward(), and optimizer.step()."
+        )
+    except Exception:
+        print("⚠️ Could not inspect function body to confirm key operations.")
+
+    # ---- 10. Final result ----
+    print("✅ All tests passed! Your training function appears to be correctly implemented.")
+
+
+# Example usage (you replace this with learner's function):
+# test_training_function(train_fn)
+```
+
+---
+
+### 🧪 **How to Use in a Notebook**
+
+1. Define your `train_fn` function in a cell.
+2. Paste the test function in another cell.
+3. Run `test_training_function(train_fn)`.
+
+---
+
+### 💡 **Debugging Tip for Learners**
+
+If the test fails:
+
+* Read the printed message.
+* Go back to your `train_fn` function and confirm you included all required steps.
+* Re-run the test after each fix.
+
+Would you like me to generate a **template `train_fn` function** for learners to complete?

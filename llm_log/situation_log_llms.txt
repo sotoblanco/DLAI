@@ -1,0 +1,182 @@
+Role: You’re a tutor expert who provides appealing stories and ideas that resemble real-world first-day experience for junior ML practitioners. 
+
+Context: The task is to provide aspiring ML practitioners to build their first neural network in PyTorch with the idea to help them see how they would work and what the first day of ML practitioners looks like in real companies, and what challenges they might face. 
+
+Instruction: Provide 5 ideas on binary classification problems with a target and a single predictor for junior machine learning practitioners to work on as their first day in the job at an ML company. 
+
+Output: Provide a list with the examples in an appealing and engaging short story to help build momentum and engage in the assignment with a clear goal. 
+
+######################
+Gemini 2.5 Flash
+######################
+
+"Welcome, future ML wizards! Grab a coffee, settle in, and let's talk about your very first day as a junior ML practitioner. Forget what you think you know about building Skynet on day one. Your first real assignment in a company often involves something surprisingly straightforward, yet incredibly foundational. It’s like learning to walk before you run, but with the added thrill of solving real-world puzzles.
+
+Imagine this: You’ve just landed your dream job at 'Insightful AI Solutions.' Your team lead, a brilliant but approachable senior engineer named Alex, walks over to your desk with a warm smile. 'Hey there!' she says, 'Excited to have you on board! For your first task, we want to get you hands-on with some core PyTorch. We've got a few interesting binary classification problems where you'll predict a 'yes' or 'no' outcome based on a single piece of information. It's a fantastic way to understand data, build a simple neural network, and see how your code directly impacts business decisions. Think of it as your initiation into the art of making predictions with data.'
+
+Alex then outlines your mission for the day: to build a basic neural network for each of these scenarios. She emphasizes that the goal isn't just to get an answer, but to understand the process, grapple with potential data quirks, and think about how even a simple model can deliver value. You'll be using a single predictor to determine a binary outcome. Sounds simple, right? That’s the beauty of it – these seemingly simple problems reveal a lot about data, model building, and the iterative nature of ML.
+
+Here are the five challenges Alex laid out for you:
+
+1.  **The 'Churn Predictor' Challenge:** "Our telecom client wants to predict if a customer will churn (leave their service) based solely on their **monthly data usage (in GB)**. Can you build a model that predicts `Churn (Yes/No)` given `Data Usage`?"
+    * **Goal:** Predict if a customer will churn (binary outcome: Yes/No)
+    * **Single Predictor:** Monthly data usage (continuous numerical value)
+
+2.  **The 'Loan Default Detector' Challenge:** "A FinTech startup needs to identify potential loan defaults. They've found a strong correlation between a borrower's **credit score** and their likelihood of defaulting. Your task: predict `Loan Default (Yes/No)` based on their `Credit Score`."
+    * **Goal:** Predict if a loan will default (binary outcome: Yes/No)
+    * **Single Predictor:** Credit score (continuous numerical value)
+
+3.  **The 'Email Spam Filter' Challenge:** "Our email security team wants to improve their spam detection. They've noticed that the **number of hyperlinks** in an email is a surprisingly good indicator. Build a model to classify `Email as Spam (Yes/No)` given the `Number of Hyperlinks`."
+    * **Goal:** Classify an email as spam or not (binary outcome: Yes/No)
+    * **Single Predictor:** Number of hyperlinks in the email (discrete numerical value)
+
+4.  **The 'Marketing Campaign Success' Challenge:** "Our marketing department is launching a new campaign and wants to predict if a potential customer will convert (make a purchase). They've observed that the **time spent on the landing page (in seconds)** is a key factor. Can you predict `Customer Conversion (Yes/No)` based on `Time Spent on Landing Page`?"
+    * **Goal:** Predict if a customer will convert (binary outcome: Yes/No)
+    * **Single Predictor:** Time spent on the landing page (continuous numerical value)
+
+5.  **The 'Student Pass/Fail Predictor' Challenge:** "An educational platform wants to identify students at risk of failing a course early on. They believe a student's **average study hours per week** is a crucial predictor. Your mission: predict `Student Pass/Fail (Pass/Fail)` based on `Average Study Hours Per Week`."
+    * **Goal:** Predict if a student will pass or fail (binary outcome: Pass/Fail)
+    * **Single Predictor:** Average study hours per week (continuous numerical value)
+
+Alex winks. 'These might seem simple, but they're the building blocks. You'll likely encounter missing data, outliers, or the need for feature scaling. Embrace those challenges – that's where the real learning happens. We're here to support you every step of the way. Welcome to the team, and let's get building!'"
+
+
+###########################
+ChatGPT
+###########################
+
+Absolutely! Here's a list of **5 engaging, real-world-inspired binary classification projects**, each wrapped in a short story that mimics what a junior ML practitioner's **first day on the job** might feel like. These stories aim to spark curiosity, provide a tangible sense of mission, and ease juniors into thinking like applied machine learning practitioners, especially when starting with **a neural network in PyTorch** with **a single predictor and a binary target**.
+
+---
+
+### **1. The Email Filter Test – “Spam or Not, Rookie?”**
+
+**Story:**
+You just joined the data team at **InstaInbox**, a startup building lightning-fast email clients. Your manager slaps a USB drive on your desk and says, “Here's a sample of our email metadata. We need to know if just the **email subject length** can help us classify **spam vs. non-spam**. Simple enough for day one?”
+
+You smile, crack open PyTorch, and begin your journey.
+
+**Target:** Spam (1) vs. Not Spam (0)
+**Predictor:** Length of email subject line (in characters)
+
+**Real-world tie-in:** This mimics rapid prototyping and lean feature testing, common in small ML teams.
+
+---
+
+### **2. Credit Check Lite – “Risk in One Glance”**
+
+**Story:**
+You’re at **FinBuddy**, a fintech company offering micro-loans in emerging markets. Internet is scarce, so full credit reports aren’t always available. You’re tasked with testing if just the **user’s income** can predict whether they’ll **default on a loan or not**.
+
+It’s not about perfection—it’s about *insight*. Your model might one day influence thousands of lending decisions.
+
+**Target:** Loan Default (1) vs. Paid Back (0)
+**Predictor:** Monthly income in USD
+
+**Real-world tie-in:** Simplified credit risk modeling under real-world data constraints.
+
+---
+
+### **3. Health at a Glance – “Temperature Tells All”**
+
+**Story:**
+Welcome to **MediScan**, where AI powers remote health diagnostics. Your first task is tiny but critical: determine if **body temperature** can help classify a patient as **having a fever or not**.
+
+It’s not the full diagnosis, but it’s your first contribution to improving remote triage systems. A neural net on this? Let’s see what it learns.
+
+**Target:** Fever (1) vs. No Fever (0)
+**Predictor:** Body temperature in Celsius
+
+**Real-world tie-in:** Early-stage model development for health screening tools.
+
+---
+
+### **4. Clickbait Patrol – “The One Metric to Fool Them All”**
+
+**Story:**
+At **VidFlow**, a content curation platform, your team is working on flagging clickbait. For your first task, your lead gives you one signal: **the number of words in a video title**. You’ll try to predict if a title is **clickbait (1) or genuine (0)**.
+
+If this works even a little, it’ll help prioritize human review queues. Can a neural net find a signal in noise?
+
+**Target:** Clickbait (1) vs. Genuine Title (0)
+**Predictor:** Number of words in video title
+
+**Real-world tie-in:** Basic feature exploration in content moderation pipelines.
+
+---
+
+### **5. Churn Starter – “Stay or Go?”**
+
+**Story:**
+You’re at **SubZen**, a company fighting subscription churn. You’re given anonymized data from a mobile app. First mission: can we predict if a user will **cancel their subscription** based solely on the **number of app sessions in their first week**?
+
+It’s not your job to get it perfect—it’s your job to learn what matters. You’ll clean the data, build a PyTorch model, and present a first-round result at Friday’s team sync.
+
+**Target:** Churned (1) vs. Retained (0)
+**Predictor:** Number of sessions in first 7 days
+
+**Real-world tie-in:** User engagement modeling with a single key behavior metric.
+
+---
+
+Each of these stories is **simple enough to be modeled with one input**, but still **realistic and meaningful**. They reflect what real first-day tasks might look like: explore a signal, prototype fast, and communicate your findings. Perfect for junior ML devs learning PyTorch and building momentum.
+
+
+########################
+Athropic
+########################
+
+# A Day in the Life: Your First ML Projects
+
+Welcome to your first day at TensorTech Solutions! As a junior ML practitioner joining our team, we want to get you started with some practical binary classification projects that mirror real-world scenarios. Your mentor, Dr. Maya Rodriguez, has prepared these starter tasks to help you build confidence with PyTorch while solving meaningful problems.
+
+## Morning Email from Dr. Rodriguez
+
+```
+From: maya.rodriguez@tensortech.com
+Subject: Your First Day Projects - Binary Classification Tasks
+Time: 9:15 AM
+
+Hi there,
+
+Welcome to the team! I'm excited to have you join us. To get you up to speed with our PyTorch workflow, I've prepared five binary classification problems that represent simplified versions of real projects we've tackled. Each uses a single predictor variable to make predictions about a binary target - perfect for building your first neural networks!
+
+Choose one that interests you and we'll review your implementation during our 4 PM check-in.
+
+Looking forward to seeing what you build,
+Maya
+```
+
+## The Projects
+
+### 1. Customer Churn Prediction Based on Service Usage
+The marketing team needs a simple model predicting which customers might leave our service. They've found that monthly usage time (in hours) is a strong indicator. Can you build a model that classifies customers as "likely to stay" (0) or "at risk of churning" (1) based solely on their average monthly platform usage?
+
+### 2. Medical Appointment No-Show Predictor
+Our healthcare client wants to reduce missed appointments. Historical data shows wait time (days between scheduling and appointment) strongly correlates with no-shows. Build a binary classifier that predicts whether a patient will attend (0) or miss (1) their appointment based on the wait time.
+
+### 3. Loan Default Risk Assessment
+The finance team needs a preliminary model for loan applications. For this starter project, focus on using debt-to-income ratio to predict whether an applicant is likely to repay (0) or default (1) on their loan.
+
+### 4. E-commerce Purchase Completion Predictor
+The product team wants to understand shopping cart abandonment. Create a model that uses time spent on the checkout page (in seconds) to predict whether a customer will complete (1) or abandon (0) their purchase.
+
+### 5. Email Engagement Classifier
+Our email marketing system needs to predict which messages will engage users. For this initial model, use email subject line length to predict whether an email will be opened (1) or ignored (0).
+
+## Afternoon Slack Message
+
+```
+Maya Rodriguez [2:30 PM]
+Quick update! For whichever project you choose, start with a simple 2-layer neural network in PyTorch. Remember to:
+- Split your data into training and validation sets
+- Normalize your input feature 
+- Monitor both training and validation loss
+- Try a few different learning rates
+
+Carlos from Data Engineering can help if you need sample data to work with. He sits by the coffee machine and loves talking about activation functions, so be prepared! 😄
+
+Let me know if you get stuck - we all do on our first implementations!
+```
+
+Which project catches your interest? Once you've chosen, I can help you set up the PyTorch implementation for your first neural network!

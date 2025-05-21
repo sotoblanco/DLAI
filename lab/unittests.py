@@ -6,7 +6,7 @@ import inspect
 
 def test_train_binary_classifier(student_function):
     """
-    Test the `train_binary_classifier` function defined by the student.
+    Test the train_binary_classifier function defined by the student.
     Verifies:
     - Function signature and parameter presence
     - Presence of critical steps: zero_grad, forward, loss, backward, step
@@ -81,10 +81,9 @@ def test_train_binary_classifier(student_function):
 
     # Step 6: Check calls
     try:
-        print("Was zero_grad called?", called['zero_grad'])
-        assert called['zero_grad'], "optimizer.zero_grad() was not called."
-        assert called['step'], "optimizer.step() was not called."
-        assert called['backward'], "loss.backward() was not called."
+        assert called['zero_grad'], "You haven't reset your gradients."
+        assert called['step'], "You haven't implemented the optimizer in your function."
+        assert called['backward'], "Backward was not implemented."
     except AssertionError as e:
         print(f"❌ Function call test failed: {e}")
         return
