@@ -44,17 +44,16 @@ docker ps
 docker stop <container_id>
 ```
 
-llm_log/
-Contains the logs of the LLMs used to generate the code and the situation for the assignments
+## Project Structure
 
-lab/
-Contains the lab notebooks and the solution notebooks
+**`images/`**: This directory is intended to store any images used within the notebooks or documentation.
 
-unittests.py
-Contains the unit tests for the code
+**`lab/`**: Contains the Jupyter lab notebooks for the assignments. This is where you'll find the exercises and corresponding solution notebooks.
 
-requirements.txt
-Contains the requirements for the project
+ **`llm_log/`**: This directory stores logs related to the Language Learning Models (LLMs) used in the project. 
+
+**`requirements.txt`**: This file lists the dependencies for the project.
+
 
 
 
