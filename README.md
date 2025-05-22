@@ -5,7 +5,7 @@
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/username/DLAI.git
+git clone https://github.com/sotoblanco/DLAI.git
 cd DLAI
 ```
 
